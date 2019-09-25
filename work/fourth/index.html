@@ -59,11 +59,12 @@
 
       $(function() {
         var listTitle = $('.menu__list').children('li')
-        var childList = $('.menu__list__childList');
-        $(listTitle).hover(function() {
+        var childList = '.menu__list__childList';
+        listTitle.hover(function() {
           $(this).children(childList).stop().slideDown()
         }, function() {
-          $(childList).stop().slideUp()
+          // console.log($(this).children(childList));
+          $(this).children(childList).stop().slideUp()
         });
       });
     </script>
