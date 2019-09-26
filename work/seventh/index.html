@@ -36,11 +36,17 @@
       // .length 要素の個数を取得します。
       $(function() {
         var slide = $('.slider-list li');
-        var slideWidth = $(slide).width();
-        var slideNum = $(slide).length;
-        // var slideCurrent = [];
-        var slideCurrent = 0;
-
+        var slideCurrent = 0;   // slidePositionの添字
+        var slideNum = slide.length;    // スライドの数
+        var slidePosition = [];   // スライドの位置情報を格納する配列
+        var slideWidth = 0;   //　スライドのwidth
+        
+        for (var i=0; i<slideNum; i++) {
+          slidePosition[i] = slideWidth;
+          slideWidth -= slide.eq(i).width();
+        }
+        // console.log(slidePosition);
+        
         var sliding = function() {
           if( slideCurrent < 0 ){
             slideCurrent = slideNum - 1;
@@ -48,26 +54,20 @@
             slideCurrent = 0;
           }
           $('.slider-list').stop().animate({
-            left: slideCurrent * -slideWidth
+            left: slidePosition[slideCurrent]
           });
-          console.log(slideCurrent);
-          // console.log(slideCurrent.length);
         }
         
         $('.slider-ctrl-btn').click(function() {
           var ctrl = $(this).data('ctrl');
           if( ctrl == 'prev'){
-            // slideCurrent.shift();
             slideCurrent--;
-            console.log(slideCurrent);
-            // console.log(slideCurrent.length);
             sliding();
+            // console.log(slideCurrent);
           }else if( ctrl == 'next'){
-            // slideCurrent.push(0);
             slideCurrent++;
-            console.log(slideCurrent);
-            // console.log(slideCurrent.length);
             sliding();
+            // console.log(slideCurrent);
           }
         });
       });
