@@ -43,19 +43,23 @@
       //
       // このテンプレートに取得してきた中身を入れて表示します。
       $(function(){
-        i = 0;
         $.ajax({
-        url: './data.json'
+          url: './data.json'
         })
         .done(function(data) {
           // console.log(data);
           var colorsArray = data.colorsArray;
-          console.log(colorsArray.colorName)
+          var lists = [];
+          i = 0;
+          // console.log(colorsArray[1].colorName);
           $.each(colorsArray, function(){
-            $('.colorList').append('<li class="colorList__item"><p class="colorList__title" style="background-color:'+colorsArray[i].hexValue+' ;">'+colorsArray[i].colorName+'</p></li>');
+            // $('.colorList').append('<li class="colorList__item"><p class="colorList__title" style="background-color:'+colorsArray[i].hexValue+' ;">'+colorsArray[i].colorName+'</p></li>');
+            var list = '<li class="colorList__item"><p class="colorList__title" style="background-color:'+colorsArray[i].hexValue+' ;">'+colorsArray[i].colorName+'</p></li>';
+            lists[i] = list;
             i++;
-            // console.log(i);
+            // console.log(lists);
           });
+          $('.colorList').html(lists);
         });
       });
     </script>
