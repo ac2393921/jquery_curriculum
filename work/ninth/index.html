@@ -47,19 +47,15 @@
           url: './data.json'
         })
         .done(function(data) {
-          // console.log(data);
           var colorsArray = data.colorsArray;
-          var lists = [];
-          i = 0;
-          // console.log(colorsArray[1].colorName);
-          $.each(colorsArray, function(){
+          var list = '';  
+          $.each(colorsArray, function(index){
             // $('.colorList').append('<li class="colorList__item"><p class="colorList__title" style="background-color:'+colorsArray[i].hexValue+' ;">'+colorsArray[i].colorName+'</p></li>');
-            var list = '<li class="colorList__item"><p class="colorList__title" style="background-color:'+colorsArray[i].hexValue+' ;">'+colorsArray[i].colorName+'</p></li>';
-            lists[i] = list;
-            i++;
-            // console.log(lists);
+            list += '<li class="colorList__item"><p class="colorList__title" style="background-color:'+colorsArray[index].hexValue+' ;">'+colorsArray[index].colorName+'</p></li>';
+            index ++;
+            // console.log(list);
           });
-          $('.colorList').html(lists);
+          $('.colorList').html(list);
         });
       });
     </script>
