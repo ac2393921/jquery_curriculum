@@ -69,8 +69,8 @@
       //
       //
       $(function() {
-        var pageNum = 0;
-        var keyword = ''
+        var pageNum = 1;
+        var keyword = '';
         $('#js-search-button').on('click',function(){
           searchRakutenBooks();
         });
@@ -78,10 +78,9 @@
         function searchRakutenBooks() {
           var searchWord = $('#js-search-word').val();
           if (searchWord == keyword) {
-            pageNum++;
+            pageNum++
           }else {
-            $('.message').remove()
-            $('.list').empty();
+            $('.lists').empty();
             pageNum = 1;
             keyword = searchWord;
           }
@@ -96,7 +95,6 @@
               hits: '20',　//１ページあたりの取得件数
               keyword: keyword, //検索キーワード
               page: pageNum, //取得ページ
-              // statusCode: statusCode,
             },
           })
             .done(function(data) {
@@ -111,7 +109,8 @@
         function done(data) {
           var items = data.Items;
           var list = '';
-          console.log(items);
+          $('.message').remove()
+          // console.log(items);
           if (data.count > 0){
             $.each(items, function(index, item) {
               list += "<li class='lists__item'>"+
@@ -124,10 +123,10 @@
                           "</a>"+
                         "</div>"+
                       "</li>";  
+              // console.log(item)
             });
             $('.lists').prepend(list);
           }else {
-            $('.message').remove()
             $('.lists').before('<div class="message">検索結果が見つかりませんでした。<br>別のキーワードで検索して下さい。</div>');
           }
         };
