@@ -68,6 +68,86 @@
       //
       //
       //
+      $(function() {
+        var pageNum = 0;
+        var keyword = ''
+        $('#js-search-button').on('click',function(){
+          var searchWord = $('#js-search-word').val();
+          if (searchWord == keyword) {
+            pageNum++;
+          }else {
+            $('.message').remove()
+            $("ul").empty();
+            pageNum = 1;
+            keyword = searchWord;
+          }
+          $.ajax({
+            url: 'https://app.rakuten.co.jp/services/api/BooksTotal/Search/20130522',
+            type: 'GET',
+            datatype: 'json',
+            data: {
+              // 「区分:サービス固有パラメーター」を確認して、必要な情報をdata内に入れましょう。
+              applicationId: '1019399324990976605', // (今回はこのIDを使用してください)
+              booksGenreId: '001',
+              hits: '20',　//１ページあたりの取得件数
+              keyword: keyword, //検索キーワード
+              page: pageNum, //取得ページ
+              // statusCode: statusCode,
+            },
+          })
+          .done(function(data) {
+          // この中にデータ取得後の動きを記述していきます。
+            var items = data.Items;
+            var list = '';
+            if (data.count > 0){
+              $.each(items, function(index) {
+                list += "<li class='lists__item'>"+
+                          "<div class='lists__item__inner'>"+
+                            "<a href='"+items[index].Item.itemUrl+"' class='lists__item__link' target='_blank'>"+
+                              "<img src='"+items[index].Item.mediumImageUrl+"' class='lists__item__img' alt='"+items[index].Item.title+"'>"+
+                              "<p class='lists__item__detail'>作品名：'"+items[index].Item.title+"'</p>"+
+                              "<p class='lists__item__detail'>作者　：'"+items[index].Item.author+"'</p>"+
+                              "<p class='lists__item__detail'>出版社：'"+items[index].Item.publisherName+"'</p>"+
+                            "</a>"+
+                          "</div>"+
+                        "</li>";  
+                index++;
+              });
+              $('.lists').prepend(list);
+            }else {
+              $('.message').remove()
+              $('.lists').before('<div class="message">検索結果が見つかりませんでした。<br>別のキーワードで検索して下さい。</div>');
+            }
+          })
+          .fail(function(jqXHR) {
+            switch(jqXHR.status) {
+              case 400:
+                if(keyword == '') {
+                  console.log('検索ワードの指定がありません。');
+                  console.log('文字を入力してください。');
+                }else {
+                  console.log('検索ワードが1文字しか入力されていません。');
+                  console.log('2文字以上入力してください。');
+                }
+                break;
+              case 404:
+                console.log('対象のデータが存在しません。');
+                break;
+              case 429:
+                console.log('リクエスト数が上限に達しました。');
+                console.log('しばらく時間を空けてから、ご利用ください。');
+                break;
+              case 500:
+                console.log('システムエラーです');
+                console.log('長時間続くようであれば、お問い合わせください。');
+                break;
+              case 503:
+                console.log('メンテナンス中です');
+                break;
+            }
+          });
+        });
+      });
     </script>
   </body>
 </html>

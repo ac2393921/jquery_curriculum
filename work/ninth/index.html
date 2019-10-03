@@ -49,9 +49,13 @@
         .done(function(data) {
           var colorsArray = data.colorsArray;
           var list = '';  
+          console.log(colorsArray)
           $.each(colorsArray, function(index){
             // $('.colorList').append('<li class="colorList__item"><p class="colorList__title" style="background-color:'+colorsArray[i].hexValue+' ;">'+colorsArray[i].colorName+'</p></li>');
-            list += '<li class="colorList__item"><p class="colorList__title" style="background-color:'+colorsArray[index].hexValue+' ;">'+colorsArray[index].colorName+'</p></li>';
+            list += '<li class="colorList__item">'+
+                      '<p class="colorList__title" style="background-color:'+colorsArray[index].hexValue+' ;">'+colorsArray[index].colorName+
+                      '</p>'+
+                    '</li>';
             index ++;
             // console.log(list);
           });
