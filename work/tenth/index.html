@@ -72,12 +72,16 @@
         var pageNum = 0;
         var keyword = ''
         $('#js-search-button').on('click',function(){
+          searchRakutenBooks();
+        });
+        
+        function searchRakutenBooks() {
           var searchWord = $('#js-search-word').val();
           if (searchWord == keyword) {
             pageNum++;
           }else {
             $('.message').remove()
-            $("ul").empty();
+            $('.list').empty();
             pageNum = 1;
             keyword = searchWord;
           }
@@ -95,58 +99,68 @@
               // statusCode: statusCode,
             },
           })
-          .done(function(data) {
-          // この中にデータ取得後の動きを記述していきます。
-            var items = data.Items;
-            var list = '';
-            if (data.count > 0){
-              $.each(items, function(index) {
-                list += "<li class='lists__item'>"+
-                          "<div class='lists__item__inner'>"+
-                            "<a href='"+items[index].Item.itemUrl+"' class='lists__item__link' target='_blank'>"+
-                              "<img src='"+items[index].Item.mediumImageUrl+"' class='lists__item__img' alt='"+items[index].Item.title+"'>"+
-                              "<p class='lists__item__detail'>作品名：'"+items[index].Item.title+"'</p>"+
-                              "<p class='lists__item__detail'>作者　：'"+items[index].Item.author+"'</p>"+
-                              "<p class='lists__item__detail'>出版社：'"+items[index].Item.publisherName+"'</p>"+
-                            "</a>"+
-                          "</div>"+
-                        "</li>";  
-                index++;
-              });
-              $('.lists').prepend(list);
-            }else {
-              $('.message').remove()
-              $('.lists').before('<div class="message">検索結果が見つかりませんでした。<br>別のキーワードで検索して下さい。</div>');
-            }
-          })
-          .fail(function(jqXHR) {
-            switch(jqXHR.status) {
-              case 400:
-                if(keyword == '') {
-                  console.log('検索ワードの指定がありません。');
-                  console.log('文字を入力してください。');
-                }else {
-                  console.log('検索ワードが1文字しか入力されていません。');
-                  console.log('2文字以上入力してください。');
-                }
-                break;
-              case 404:
-                console.log('対象のデータが存在しません。');
-                break;
-              case 429:
-                console.log('リクエスト数が上限に達しました。');
-                console.log('しばらく時間を空けてから、ご利用ください。');
-                break;
-              case 500:
-                console.log('システムエラーです');
-                console.log('長時間続くようであれば、お問い合わせください。');
-                break;
-              case 503:
-                console.log('メンテナンス中です');
-                break;
-            }
-          });
-        });
+            .done(function(data) {
+              // この中にデータ取得後の動きを記述していきます。
+              done(data);
+             })
+            .fail(function(jqXHR) {
+              fail(jqXHR);
+            });
+        };
+      
+        function done(data) {
+          var items = data.Items;
+          var list = '';
+          console.log(items);
+          if (data.count > 0){
+            $.each(items, function(index, item) {
+              list += "<li class='lists__item'>"+
+                        "<div class='lists__item__inner'>"+
+                          "<a href='"+item.Item.itemUrl+"' class='lists__item__link' target='_blank'>"+
+                          "<img src='"+item.Item.mediumImageUrl+"' class='lists__item__img' alt='"+item.Item.title+"'>"+
+                          "<p class='lists__item__detail'>作品名：'"+item.Item.title+"'</p>"+
+                          "<p class='lists__item__detail'>作者　：'"+item.Item.author+"'</p>"+
+                          "<p class='lists__item__detail'>出版社：'"+item.Item.publisherName+"'</p>"+
+                          "</a>"+
+                        "</div>"+
+                      "</li>";  
+            });
+            $('.lists').prepend(list);
+          }else {
+            $('.message').remove()
+            $('.lists').before('<div class="message">検索結果が見つかりませんでした。<br>別のキーワードで検索して下さい。</div>');
+          }
+        };
+              
+        function fail(jqXHR) {
+          $('.message').remove()
+          var errorText = '';
+          switch(jqXHR.status) {
+            case 400:
+              if(keyword == '') {
+                errorText = '<div class="message">検索ワードの指定がありません。<br>文字を入力してください。</div>';
+              }else {
+                errorText = '<div class="message">検索ワードが1文字しか入力されていません。<br>2文字以上入力してください。</div>';
+              }
+              break;
+            case 404:
+              errorText = '<div class="message">対象のデータが存在しません。</div>';
+              break;
+            case 429:
+              errorText = '<div class="message">リクエスト数が上限に達しました。<br>しばらく時間を空けてから、ご利用ください。</div>';
+              break;
+            case 500:
+              errorText = '<div class="message">システムエラーです。<br>長時間続くようであれば、お問い合わせください。</div>';
+              break;
+            case 503:
+              errorText = '<div class="message">メンテナンス中です。</div>';
+              break;
+            default:
+              errorText = '<div class="message">インターネットに繋がっていません。<br>接続状況を確認してください。</div>';
+              break;
+          };
+          $('.lists').before(errorText);
+        };
       });
     </script>
   </body>
